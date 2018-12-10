@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
 public class main {
 
 	public static void main(String[] args) throws IOException {
-		LinkedHashMap<String,String> map=new LinkedHashMap<>();
+	
         String request = "GET /index.jsp HTTP/1.1\r\n"+
                 "Host: mifanblog.cn\r\n";
 		System.out.println(post(request,"mifanblog.cn:1027"));
@@ -92,7 +92,6 @@ public class main {
 	
 	public static String post(String raw,String host) throws IOException {
 		Socket soc=new Socket();
-		String[] strs=raw.split("\n");
 		InetSocketAddress inetSocketAddress = new InetSocketAddress(host.split(":")[0],!host.contains(":")?80:Integer.parseInt(host.split(":")[1]));
 		soc.connect(inetSocketAddress,1000);
 		PrintWriter pw=new PrintWriter(soc.getOutputStream());
