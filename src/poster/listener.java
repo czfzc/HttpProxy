@@ -1,36 +1,47 @@
 package poster;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.LinkedList;
 
-public class listener {
+public class listener{
+	
+	public static int MAX_HOSTS=20;
+	
+	protected static LinkedList<Doer> list=new LinkedList<>();
+	static {
+		for(int i=0;i<MAX_HOSTS;i++) {
+			list.add(new Doer(i));
+		}
+	}
+	
 	public static void main(String[] args) throws IOException{
 		ServerSocket server=new ServerSocket(1027);
+
+		Socket soc=null;
 		while(true) {
 			try {
-				Socket soc=server.accept();
 				System.out.println("waiting...");
-				BufferedReader br=new BufferedReader(new InputStreamReader(soc.getInputStream()));
-				String line=null;
-				String raw="";
-				while((line=br.readLine())!=null&&!line.isEmpty()) {
-					raw+=line+"\r\n";
+				soc=server.accept();
+				
+				int i=0;
+				while(i<list.size()&&list.get(i++).isRunnable()) {
+					Doer doer=list.get(i-1);
+					doer.setSocket(soc);
+					new Thread(doer).start();
+					break;
 				}
-				String data=main.post(raw);
-				PrintWriter pw=new PrintWriter(soc.getOutputStream());
-				pw.println(data);
-				pw.close();
-				soc.close();
+				
 			}catch(Exception e) {
 				e.printStackTrace();
 				System.out.println("restarting...");
 			}finally {
+				soc.close();
 				continue;
 			}
 		}
 	}
+	
+
 }

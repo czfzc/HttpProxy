@@ -71,7 +71,7 @@ public class main {
 		String[] strs=raw.split("\n");
 		String host="";
 		for(int i=0;i<strs.length;i++) {
-			if(strs[i].startsWith("Host:"));
+			if(strs[i].startsWith("Host:"))
 				host=strs[i].replace("Host: ", "").replace("\r", "").replace("Host:", "");
 		}
 		InetSocketAddress inetSocketAddress = new InetSocketAddress(host.split(":")[0],!host.contains(":")?80:Integer.parseInt(host.split(":")[1]));
