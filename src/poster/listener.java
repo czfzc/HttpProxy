@@ -17,30 +17,39 @@ public class listener{
 	}
 	
 	public static void main(String[] args) throws IOException{
-		ServerSocket server=new ServerSocket(1027);
+		ServerSocket server=new ServerSocket(1028);
 
 		Socket soc=null;
 		while(true) {
 			try {
 				System.out.println("waiting...");
 				soc=server.accept();
-				
+				System.out.println("accepted...");
 				int i=0;
-				while(i<list.size()&&list.get(i++).isRunnable()) {
-					Doer doer=list.get(i-1);
-					doer.setSocket(soc);
-					new Thread(doer).start();
-					break;
+				
+				while(i<list.size()) {
+					if(i<list.size()&&!list.get(i).isRunnable()) {
+						System.out.println(i);
+						Doer doer=list.get(i);
+						doer.setSocket(soc);
+						doer.start();
+						System.out.println("started...");
+						break;
+					}
+					if(i<MAX_HOSTS) {
+						list.add(new Doer(list.size()));
+					}
+					i++;
 				}
 				
 			}catch(Exception e) {
 				e.printStackTrace();
 				System.out.println("restarting...");
 			}finally {
-				soc.close();
 				continue;
 			}
 		}
+		
 	}
 	
 
