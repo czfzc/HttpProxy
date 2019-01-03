@@ -56,7 +56,7 @@ public class Doer implements Runnable{
 				pw.flush();
 				pw.close();
 		*/
-				main.bitPost(is,os);
+				main.bitPost(is,os,null);
 				
 			} catch (IOException e) {
 				e.printStackTrace();

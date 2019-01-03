@@ -1,10 +1,12 @@
 package poster;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -17,10 +19,12 @@ public class main {
 	public static void main(String[] args) throws IOException {
 	
         String request = "GET / HTTP/1.1\r\n"+
-                "Host: mifanblog.cn\r\n";
+                "Host: www.neu.edu.cn\r\n\r\n";
+        
       //  System.out.println("".isEmpty());
-		System.out.println(post(request,"127.0.0.1:1028"));
-		//bitPost(System.out,request);
+       
+	//	System.out.println(new String(post(request).getBytes("GBK"),"utf-8"));
+		bitPost(new ByteArrayInputStream(request.getBytes()),System.out,"127.0.0.1:1028");
 	}
 	
 	public static String post(String firstline,LinkedHashMap<String,String> map,String body) throws IOException {
@@ -114,17 +118,16 @@ public class main {
 		return toret;
 	}
 	
-	public static void bitPost(InputStream in,OutputStream out) throws IOException {
+	public static void bitPost(InputStream in,OutputStream out,String ahost) throws IOException {
 		Socket soc=new Socket();
 		
 		byte[] b=new byte[in.available()];
 		
-		int a=-1,i=0;
-		while(i<in.available()) {
-			b[i++]=(byte)in.read();
+		for(int i=0;i<b.length;i++) {
+			b[i]=(byte)in.read();
 		}
 		
-		String host=host(b);
+		String host=ahost==null?host(b):ahost;
 		
 		InetSocketAddress inetSocketAddress = new InetSocketAddress(host.split(":")[0],!host.contains(":")?80:Integer.parseInt(host.split(":")[1]));
 		soc.connect(inetSocketAddress,connectTime);
@@ -133,11 +136,9 @@ public class main {
 		
 		os.write(b);
 		
-		soc.shutdownOutput();
-		
 		InputStream is=soc.getInputStream();
 		
-		a=-1;
+		int a=-1;
 		while((a=is.read())!=-1) {
 			out.write(a);
 		}
@@ -152,7 +153,14 @@ public class main {
 	}
 	
 	public static String host(byte[] b) {
-		return "mifanblog.cn";
+		String req=new String(b);
+		String[] strs=req.split("\n");
+		String host="";
+		for(int i=0;i<strs.length;i++) {
+			if(strs[i].startsWith("Host:"))
+				host=strs[i].replace("Host: ", "").replace("\r", "").replace("Host:", "");
+		}
+		return host;
 	}
 
 }

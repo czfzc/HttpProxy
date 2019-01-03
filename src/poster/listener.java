@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 public class listener{
 	
-	public static int MAX_HOSTS=20;
+	public static int MAX_HOSTS=50;
 	
 	protected static LinkedList<Doer> list=new LinkedList<>();
 	static {
@@ -19,11 +19,10 @@ public class listener{
 	public static void main(String[] args) throws IOException{
 		ServerSocket server=new ServerSocket(1028);
 
-		Socket soc=null;
 		while(true) {
 			try {
 				System.out.println("waiting...");
-				soc=server.accept();
+				Socket soc=server.accept();
 				System.out.println("accepted...");
 				int i=0;
 				
@@ -45,8 +44,6 @@ public class listener{
 			}catch(Exception e) {
 				e.printStackTrace();
 				System.out.println("restarting...");
-			}finally {
-				continue;
 			}
 		}
 		
